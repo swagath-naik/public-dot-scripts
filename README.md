@@ -1,2 +1,2 @@
 # dot-scripts
-Personal Scripts
+Some Useful Scripts
