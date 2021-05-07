@@ -1,20 +1,30 @@
 #! /bin/bash
 # VARS
 ip_gateway="$(route -n | grep 'UG[ \t]' | awk '{print $2}')"
-port="1000" # change port if needed
+ip_addrs="$(ip -4 a  | grep inet | cut -d' ' -f 6 | cut -d'/' -f1)"
+###########################################################
+port="1000"		# change port if needed
+sleep_secs=1200		# change refresh time if needed
+user_name=""		# set username
+pass_word=""		# set password
+###########################################################
 url_site="http://$ip_gateway:$port"
-sleep_secs=1200 # change refresh time if needed
-user_name="" # set username
-pass_word="" # set password
+
 
 # LOGIN
 magic="$(curl -v --silent $url_site/login? 2>&1 | grep magic | cut -d' ' -f14 | cut -d'"' -f2)"
 keep_alive="$(curl -v --silent -d "username=$user_name&password=$pass_word&magic=$magic&4Tredir=$url_site/login?" -X POST $url_site 2>&1 | grep Location | cut -d' ' -f3)"
-tput setaf 11; echo "LOGIN"
+ret=$?
+if [ $ret -eq 0 ]; then
+	tput setaf 11;echo "Logging in as : $user_name"
+fi
+tput setaf 11; echo "LOGIN : $(date)"
+tput setaf 11; echo "IPv4-list: $ip_addrs" | tr ' ' '\n'
+tput setaf 11; echo "Gateway: $ip_gateway"
 
 # LOGOUT TRAP
-trap 'curl -s -o /dev/null $url_site/logout? && tput setaf 11; echo -e "\nLOGOUT" && exit' SIGINT
-trap 'curl -s -o /dev/null $url_site/logout? && tput setaf 11; echo -e "\nLOGOUT" && exit' TERM
+trap 'curl -s -o /dev/null $url_site/logout? && tput setaf 11; echo -e "\nLOGOUT : $(date)" && exit' SIGINT
+trap 'curl -s -o /dev/null $url_site/logout? && tput setaf 11; echo -e "\nLOGOUT : $(date)" && exit' TERM
 
 # LOOP
 while true
@@ -24,9 +34,10 @@ do
 	curl -s -o /dev/null "${keep_alive[@]%$'\r'}"
 	ret=$?
 	if [ $ret -ne 0 ]; then
-		tput setaf 1; echo "LOGIN FAIL"
+		tput setaf 1; echo "LOGIN FAIL : $(date)"
         	exit 1
 	fi
 	sleep $sleep_secs
 done
+
 
