@@ -1,13 +1,14 @@
 #! /bin/bash
+# This script is used for logging to College Lan/Wifi captive profile and it refreshes login after a given specified time. 
 # VARS
-ip_gateway="$(route -n | grep 'UG[ \t]' | awk '{print $2}')"
-ip_addrs="$(ip -4 a  | grep inet | cut -d' ' -f 6 | cut -d'/' -f1)"
 ###########################################################
 port="1000"		# change port if needed
 sleep_secs=1200		# change refresh time if needed
 user_name=""		# set username
 pass_word=""		# set password
 ###########################################################
+ip_gateway="$(route -n | grep 'UG[ \t]' | awk '{print $2}')"
+ip_addrs="$(ip -4 a  | grep inet | cut -d' ' -f 6 | cut -d'/' -f1)"
 url_site="http://$ip_gateway:$port"
 
 
