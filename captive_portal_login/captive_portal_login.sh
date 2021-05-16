@@ -24,8 +24,10 @@ tput setaf 11; echo "IPv4-list: $ip_addrs" | tr ' ' '\n'
 tput setaf 11; echo "Gateway: $ip_gateway"
 
 # LOGOUT TRAP
+trap 'curl -s -o /dev/null $url_site/logout? && tput setaf 11; echo -e "\nLOGOUT : $(date)" && exit' SIGHUP
 trap 'curl -s -o /dev/null $url_site/logout? && tput setaf 11; echo -e "\nLOGOUT : $(date)" && exit' SIGINT
-trap 'curl -s -o /dev/null $url_site/logout? && tput setaf 11; echo -e "\nLOGOUT : $(date)" && exit' TERM
+trap 'curl -s -o /dev/null $url_site/logout? && tput setaf 11; echo -e "\nLOGOUT : $(date)" && exit' SIGKILL
+trap 'curl -s -o /dev/null $url_site/logout? && tput setaf 11; echo -e "\nLOGOUT : $(date)" && exit' SIGTERM
 
 # LOOP
 while true
