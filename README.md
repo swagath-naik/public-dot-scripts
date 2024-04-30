@@ -1,2 +1,2 @@
-# dot-scripts
+# Scripts
 Some Useful Scripts
